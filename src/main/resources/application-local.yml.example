@@ -1,0 +1,18 @@
+# 사용법
+#   1. 이 파일을 같은 폴더에 application-local.yml 로 복사한다. (.gitignore 에 포함되어 커밋되지 않는다)
+#   2. 아래 빈 값을 채운다. 이 파일(.example)에는 실제 값을 쓰지 않는다.
+#   3. ./gradlew bootRun --args='--spring.profiles.active=local'
+bot:
+  # 공공데이터포털(data.go.kr) 인증키: 날씨(기상청), 미세먼지(에어코리아), 서울 버스
+  # Encoding 키, Decoding 키 중 어느 쪽을 넣어도 된다.
+  public-api-key: ""
+  # 서울 열린데이터광장(data.seoul.go.kr) 인증키: 지하철 실시간 도착 전용
+  seoul-open-api-key: ""
+  # 텔레그램 봇 토큰 (2차 기능, 지금은 비워 둬도 된다)
+  telegram-token: ""
+  location:
+    # 날씨 기준 위치 (지도에서 확인한 위도·경도)
+    lat: 37.5665
+    lon: 126.9780
+    # 에어코리아 측정소명 (거주 자치구 대표 측정소)
+    air-station: 은평구

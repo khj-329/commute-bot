@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>출근길 알림</title>
+    <style>
+        :root { --bg: #f6f7f9; --card: #fff; --text: #1d2330; --muted: #667085; --line: #e4e7ec; --accent: #2563eb; --bad: #c0392b; --ok: #1e7f4f; }
+        @media (prefers-color-scheme: dark) {
+            :root { --bg: #14161b; --card: #1d2027; --text: #e7e9ee; --muted: #9aa3b2; --line: #2d313a; --accent: #6b9bff; --bad: #ff7b6e; --ok: #5fd39a; }
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 -apple-system, "Segoe UI", "Malgun Gothic", sans-serif; }
+        main { max-width: 860px; margin: 0 auto; padding: 16px; }
+        h1 { font-size: 22px; margin: 8px 0 16px; }
+        h2 { font-size: 17px; margin: 0 0 10px; }
+        h3 { font-size: 15px; margin: 14px 0 6px; }
+        section { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+        .muted { color: var(--muted); }
+        .failed { color: var(--bad); font-weight: 600; }
+        .notice { padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; border: 1px solid var(--line); background: var(--card); }
+        .notice.error { border-color: var(--bad); color: var(--bad); }
+        .notice.ok { border-color: var(--ok); color: var(--ok); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+        th { color: var(--muted); font-weight: 500; font-size: 13px; }
+        .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        input[type=text], select { padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--text); font: inherit; }
+        button { padding: 6px 12px; border: 0; border-radius: 6px; background: var(--accent); color: #fff; font: inherit; cursor: pointer; }
+        button.link { background: none; color: var(--bad); padding: 0 4px; font-size: 13px; }
+        form.inline { display: inline; }
+        .stop-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+    </style>
+</head>
+<body>
+<main>
+    <h1>출근길 알림</h1>
+
+    <div class="notice error" th:if="${error}" th:text="${error}"></div>
+    <div class="notice ok" th:if="${message}" th:text="${message}"></div>
+
+    <section>
+        <h2>🌤 날씨</h2>
+        <div th:if="${weather != null}" th:text="${weather.text()}"></div>
+        <div th:if="${weather == null}" class="failed">조회 실패</div>
+    </section>
+
+    <section>
+        <h2>😷 미세먼지</h2>
+        <div th:if="${air != null}" th:text="${air.text()}"></div>
+        <div th:if="${air == null}" class="failed">조회 실패</div>
+    </section>
+
+    <section>
+        <h2>🚌 대표 정류장 버스</h2>
+        <div th:if="${representative == null}" class="muted">대표 정류장을 설정해 주세요</div>
+        <div th:if="${representative != null}" th:with="v=${representative}">
+            <div class="stop-head">
+                <strong th:text="|${v.stop().stopName} (${v.stop().arsId})|"></strong>
+                <form class="inline" method="post" th:action="@{/stops/delete}">
+                    <input type="hidden" name="type" value="representative">
+                    <button class="link" type="submit">삭제</button>
+                </form>
+            </div>
+            <div th:replace="~{fragments/arrivals :: arrivals(${v})}"></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>🔁 환승 정류장 버스</h2>
+        <div th:if="${#lists.isEmpty(transfers)}" class="muted">등록된 환승 정류장 없음</div>
+        <div th:each="v : ${transfers}">
+            <div class="stop-head">
+                <h3 th:text="|${v.stop().stopName} (${v.stop().arsId})|"></h3>
+                <form class="inline" method="post" th:action="@{/stops/delete}">
+                    <input type="hidden" name="type" value="transfer">
+                    <input type="hidden" name="arsId" th:value="${v.stop().arsId}">
+                    <input type="hidden" name="stId" th:value="${v.stop().stId}">
+                    <button class="link" type="submit">삭제</button>
+                </form>
+            </div>
+            <div th:replace="~{fragments/arrivals :: arrivals(${v})}"></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>🚇 지하철</h2>
+        <div th:if="${#lists.isEmpty(stations)}" class="muted">등록된 역 없음</div>
+        <div th:each="s : ${stations}">
+            <div class="stop-head">
+                <h3 th:text="|${s.station().name} ${s.station().line}|"></h3>
+                <form class="inline" method="post" th:action="@{/stops/delete}">
+                    <input type="hidden" name="type" value="subway">
+                    <input type="hidden" name="name" th:value="${s.station().name}">
+                    <input type="hidden" name="line" th:value="${s.station().line}">
+                    <button class="link" type="submit">삭제</button>
+                </form>
+            </div>
+            <div th:if="${s.failed()}" class="failed">조회 실패</div>
+            <div th:if="${!s.failed() and #maps.isEmpty(s.byDirection())}" class="muted">도착 정보 없음</div>
+            <table th:if="${!s.failed() and !#maps.isEmpty(s.byDirection())}">
+                <tr><th>방향</th><th>다음 열차</th></tr>
+                <tr th:each="entry : ${s.byDirection()}">
+                    <td th:text="${entry.key}"></td>
+                    <td>
+                        <div th:each="a : ${entry.value}" th:text="|${a.display()} · ${a.destination()}행|"></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </section>
+
+    <section>
+        <h2>등록</h2>
+        <h3>버스 정류장 (표지판 번호)</h3>
+        <form class="row" method="post" th:action="@{/stops/bus}">
+            <input type="text" name="arsId" placeholder="예: 13221" inputmode="numeric" maxlength="5" required>
+            <label><input type="checkbox" name="representative" value="true"> 대표 정류장으로</label>
+            <button type="submit">등록</button>
+        </form>
+        <p class="muted">현재 서울 정류장만 지원합니다. 대표로 체크하지 않으면 환승 정류장으로 등록됩니다.</p>
+
+        <h3>지하철역</h3>
+        <form class="row" method="post" th:action="@{/stops/subway}">
+            <input type="text" name="name" placeholder="예: 새절(신사)" required>
+            <select name="line" required>
+                <option th:each="l : ${lines}" th:value="${l}" th:text="${l}"></option>
+            </select>
+            <button type="submit">등록</button>
+        </form>
+        <p class="muted">역명은 역 목록과 정확히 일치해야 합니다. 맞지 않으면 후보를 알려 드립니다.</p>
+    </section>
+</main>
+
+</body>
+</html>

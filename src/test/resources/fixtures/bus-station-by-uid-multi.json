@@ -1,0 +1,82 @@
+{
+ "comMsgHeader": {
+  "errMsg": null,
+  "responseTime": null,
+  "requestMsgID": null,
+  "responseMsgID": null,
+  "successYN": null,
+  "returnCode": null
+ },
+ "msgHeader": {
+  "headerMsg": "정상적으로 처리되었습니다.",
+  "headerCd": "0",
+  "itemCount": 0
+ },
+ "msgBody": {
+  "itemList": [
+   {
+    "adirection": "북쪽방면",
+    "arrmsg1": "2분후[1번째 전]",
+    "arrmsg2": "9분후[4번째 전]",
+    "arsId": "99001",
+    "busRouteAbrv": "7017",
+    "busRouteId": "100100409",
+    "busType1": "0",
+    "firstTm": "0400      ",
+    "lastTm": "2240      ",
+    "gpsX": "126.9361",
+    "gpsY": "37.5701",
+    "nxtStn": "다음정류장(합성)",
+    "rtNm": "7017",
+    "stId": "111000001",
+    "stNm": "합성정류장A",
+    "staOrd": "10",
+    "term": "10",
+    "repTm": "2021-03-02 10:47:31.0",
+    "routeType": "3"
+   },
+   {
+    "adirection": "북쪽방면",
+    "arrmsg1": "곧 도착",
+    "arrmsg2": "9분30초후[4번째 전]",
+    "arsId": "99001",
+    "busRouteAbrv": "701",
+    "busRouteId": "100100073",
+    "busType1": "0",
+    "firstTm": "0400      ",
+    "lastTm": "2240      ",
+    "gpsX": "126.9361",
+    "gpsY": "37.5701",
+    "nxtStn": "다음정류장(합성)",
+    "rtNm": "701",
+    "stId": "111000001",
+    "stNm": "합성정류장A",
+    "staOrd": "11",
+    "term": "10",
+    "repTm": "2021-03-02 10:47:31.0",
+    "routeType": "3"
+   },
+   {
+    "adirection": "남쪽방면",
+    "arrmsg1": "6분후[2번째 전]",
+    "arrmsg2": "곧 도착",
+    "arsId": "99001",
+    "busRouteAbrv": "702A",
+    "busRouteId": "100100074",
+    "busType1": "0",
+    "firstTm": "0400      ",
+    "lastTm": "2240      ",
+    "gpsX": "126.9361",
+    "gpsY": "37.5701",
+    "nxtStn": "다음정류장(합성)",
+    "rtNm": "702A",
+    "stId": "111000002",
+    "stNm": "합성정류장B",
+    "staOrd": "30",
+    "term": "10",
+    "repTm": "2021-03-02 10:47:31.0",
+    "routeType": "3"
+   }
+  ]
+ }
+}

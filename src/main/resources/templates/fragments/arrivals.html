@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="arrivals(v)">
+    <div th:if="${v.failed()}" class="failed">조회 실패</div>
+    <div th:if="${!v.failed() and #lists.isEmpty(v.arrivals())}" class="muted">도착 정보 없음</div>
+    <table th:if="${!v.failed() and !#lists.isEmpty(v.arrivals())}">
+        <tr><th>노선</th><th>첫 번째</th><th>두 번째</th></tr>
+        <tr th:each="a : ${v.arrivals()}">
+            <td th:text="${a.routeName()}"></td>
+            <td th:text="${a.firstArrivalText()}"></td>
+            <td th:text="${a.secondArrivalText()}"></td>
+        </tr>
+    </table>
+</th:block>
+</body>
+</html>
