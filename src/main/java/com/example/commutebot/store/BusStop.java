@@ -35,7 +35,7 @@ public class BusStop {
     protected BusStop() {
     }
 
-    BusStop(String arsId, String stId, String stopName, List<String> routes, boolean representative) {
+    public BusStop(String arsId, String stId, String stopName, List<String> routes, boolean representative) {
         this.arsId = arsId;
         this.stId = stId;
         this.stopName = stopName;
