@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: commute-bot
+  datasource:
+    url: jdbc:sqlite:commute.db
+    driver-class-name: org.sqlite.JDBC
+    hikari:
+      maximum-pool-size: 1
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+# 키와 토큰은 여기에 쓰지 않는다. application-local.yml.example 을 복사해
+# application-local.yml 로 만들고 값을 채운 뒤 --spring.profiles.active=local 로 실행한다.
+bot:
+  location:
+    lat: 37.5665
+    lon: 126.9780
+    air-station: 은평구
