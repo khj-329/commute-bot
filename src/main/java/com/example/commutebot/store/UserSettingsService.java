@@ -54,6 +54,11 @@ public class UserSettingsService {
         busStops.deleteByRepresentativeFalseAndArsId(arsId);
     }
 
+    /** 같은 표지판 번호에 정류소가 여러 개일 수 있으므로 정류소 ID까지 맞는 한 건만 지운다. */
+    public void removeTransferStop(String arsId, String stId) {
+        busStops.deleteByRepresentativeFalseAndArsIdAndStId(arsId, stId);
+    }
+
     @Transactional(readOnly = true)
     public List<BusStop> transferStops() {
         return busStops.findByRepresentativeFalseOrderByIdAsc();

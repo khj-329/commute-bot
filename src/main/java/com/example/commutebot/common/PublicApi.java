@@ -60,6 +60,9 @@ public final class PublicApi {
      */
     public static <E extends ApiCallException> String get(RestClient client, String apiName,
             String uriTemplate, Map<String, ?> vars, ErrorFactory<E> errors) {
+        if (vars.containsKey("key") && (vars.get("key") == null || vars.get("key").toString().isBlank())) {
+            throw fail(apiName, "인증키가 설정되지 않았습니다 (application-local.yml 확인)", true, null, errors);
+        }
         String body;
         try {
             body = client.get().uri(uriTemplate, vars).retrieve().body(String.class);

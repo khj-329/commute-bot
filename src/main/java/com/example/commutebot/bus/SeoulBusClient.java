@@ -21,8 +21,10 @@ public class SeoulBusClient implements BusStopLookup, BusArrivalProvider {
     static final String API_NAME = "서울 버스";
     private static final String URL = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid"
             + "?serviceKey={key}&arsId={arsId}&resultType=json";
-    /** 3: 정류소 없음, 4: 노선/결과 없음, 8: 운행 종료 → 빈 결과. */
-    private static final Set<String> EMPTY_CODES = Set.of("3", "4", "8");
+    /** 3: 요청 파라미터 잘못됨(없는 번호), 4: 결과 없음, 22: 운행 종료 → 빈 결과. */
+    private static final Set<String> EMPTY_CODES = Set.of("3", "4", "22");
+    /** 5: 인증키 없음, 6: 등록되지 않은 키, 7: 사용 중지된 키 → 인증 오류. 8(요청 제한 초과)은 일반 실패. */
+    private static final Set<String> AUTH_CODES = Set.of("5", "6", "7");
 
     private final RestClient client;
     private final BotProperties props;
@@ -73,7 +75,8 @@ public class SeoulBusClient implements BusStopLookup, BusArrivalProvider {
             return List.of();
         }
         if (!"0".equals(code)) {
-            boolean auth = message.contains("인증") || message.contains("키") || message.toUpperCase().contains("KEY");
+            boolean auth = AUTH_CODES.contains(code) || message.contains("인증")
+                    || message.contains("키") || message.toUpperCase().contains("KEY");
             throw PublicApi.fail(API_NAME, "headerCd " + code + " " + message, auth, null, BusApiException::new);
         }
         JsonNode list = root.path("msgBody").path("itemList");

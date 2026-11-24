@@ -75,6 +75,7 @@
                 <form class="inline" method="post" th:action="@{/stops/delete}">
                     <input type="hidden" name="type" value="transfer">
                     <input type="hidden" name="arsId" th:value="${v.stop().arsId}">
+                    <input type="hidden" name="stId" th:value="${v.stop().stId}">
                     <button class="link" type="submit">삭제</button>
                 </form>
             </div>

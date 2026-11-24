@@ -221,6 +221,16 @@ class DashboardControllerTest {
     }
 
     @Test
+    void transferDeleteTargetsTheExactStop() throws Exception {
+        mvc.perform(post("/stops/delete").param("type", "transfer")
+                        .param("arsId", "99001").param("stId", "111000002"))
+                .andExpect(redirectedUrl("/"));
+
+        verify(settings).removeTransferStop("99001", "111000002");
+        verify(settings, never()).removeTransferStop("99001");
+    }
+
+    @Test
     void deleteRemovesRegisteredItems() throws Exception {
         mvc.perform(post("/stops/delete").param("type", "transfer").param("arsId", "12345"))
                 .andExpect(redirectedUrl("/"));

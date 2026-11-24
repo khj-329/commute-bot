@@ -69,6 +69,16 @@ class UserSettingsServiceTest {
     }
 
     @Test
+    void removingOneOfTwoTransferStopsWithSameArsIdKeepsTheOther() {
+        service.addTransferStop("99001", "111000001", "정류장A", List.of("7017"));
+        service.addTransferStop("99001", "111000002", "정류장B", List.of("702A"));
+
+        service.removeTransferStop("99001", "111000001");
+
+        assertThat(service.transferStops()).extracting(BusStop::getStId).containsExactly("111000002");
+    }
+
+    @Test
     void transferStopsAreAddedAndRemovedByArsId() {
         service.setRepresentativeStop("13221", "112000138", "대표", List.of("7017"));
         service.addTransferStop("12345", "111000001", "환승1", List.of("701", "702"));

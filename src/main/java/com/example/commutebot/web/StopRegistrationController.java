@@ -123,13 +123,16 @@ public class StopRegistrationController {
     @PostMapping("/stops/delete")
     public String delete(@RequestParam String type,
             @RequestParam(required = false) String arsId,
+            @RequestParam(required = false) String stId,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String line,
             RedirectAttributes redirect) {
         switch (type) {
             case "representative" -> settings.clearRepresentativeStop();
             case "transfer" -> {
-                if (arsId != null) {
+                if (arsId != null && stId != null && !stId.isBlank()) {
+                    settings.removeTransferStop(arsId, stId);
+                } else if (arsId != null) {
                     settings.removeTransferStop(arsId);
                 }
             }

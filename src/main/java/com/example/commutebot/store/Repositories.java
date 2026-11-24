@@ -13,6 +13,8 @@ interface BusStopRepository extends JpaRepository<BusStop, Long> {
     void deleteByRepresentativeTrue();
 
     void deleteByRepresentativeFalseAndArsId(String arsId);
+
+    void deleteByRepresentativeFalseAndArsIdAndStId(String arsId, String stId);
 }
 
 interface SubwayStationRepository extends JpaRepository<SubwayStation, Long> {

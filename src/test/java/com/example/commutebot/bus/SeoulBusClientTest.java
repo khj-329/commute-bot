@@ -68,6 +68,40 @@ class SeoulBusClientTest {
     }
 
     @Test
+    void headerCode8QuotaExceededIsAFailureNotAnEmptyResult() {
+        respond("bus-header8-quota.json");
+
+        assertThatThrownBy(() -> client.arrivalsAt(stop("13221", "112000138")))
+                .isInstanceOf(BusApiException.class)
+                .hasMessageContaining("요청 제한")
+                .satisfies(e -> assertThat(((BusApiException) e).isAuthError()).isFalse());
+    }
+
+    @Test
+    void headerCode8OnLookupIsAFailureNotANonexistentStop() {
+        respond("bus-header8-quota.json");
+
+        assertThatThrownBy(() -> client.findByArsId("13221")).isInstanceOf(BusApiException.class);
+    }
+
+    @Test
+    void headerCode22ServiceEndedIsEmptyResult() {
+        respond("bus-header22-ended.json");
+
+        assertThat(client.arrivalsAt(stop("13221", "112000138"))).isEmpty();
+    }
+
+    @Test
+    void headerCode6UnregisteredKeyIsAuthError() {
+        respond("bus-header6-unregistered.json");
+
+        assertThatThrownBy(() -> client.arrivalsAt(stop("13221", "112000138")))
+                .isInstanceOf(BusApiException.class)
+                .hasMessageContaining("인증키")
+                .satisfies(e -> assertThat(((BusApiException) e).isAuthError()).isTrue());
+    }
+
+    @Test
     void authErrorThrowsBusApiExceptionMentioningKey() {
         respond("bus-auth-error.json");
 
