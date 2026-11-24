@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>정류장 선택</title>
+    <style>
+        :root { --bg: #f6f7f9; --card: #fff; --text: #1d2330; --muted: #667085; --line: #e4e7ec; --accent: #2563eb; --bad: #c0392b; }
+        @media (prefers-color-scheme: dark) {
+            :root { --bg: #14161b; --card: #1d2027; --text: #e7e9ee; --muted: #9aa3b2; --line: #2d313a; --accent: #6b9bff; --bad: #ff7b6e; }
+        }
+        body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 -apple-system, "Segoe UI", "Malgun Gothic", sans-serif; }
+        main { max-width: 640px; margin: 0 auto; padding: 16px; }
+        .notice { padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; border: 1px solid var(--bad); color: var(--bad); }
+        label { display: block; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; cursor: pointer; }
+        .muted { color: var(--muted); font-size: 13px; }
+        button { padding: 8px 14px; border: 0; border-radius: 6px; background: var(--accent); color: #fff; font: inherit; cursor: pointer; }
+        a { color: var(--muted); margin-left: 10px; }
+    </style>
+</head>
+<body>
+<main>
+    <h1 th:text="|표지판 번호 ${pending.arsId()} 정류장 선택|">정류장 선택</h1>
+    <p class="muted">같은 번호에 정류소가 여러 개 있습니다. 하나를 골라 주세요.</p>
+    <div class="notice" th:if="${error}" th:text="${error}"></div>
+
+    <form method="post" th:action="@{/stops/bus/choose}">
+        <label th:each="c, it : ${pending.candidates()}">
+            <input type="radio" name="stId" th:value="${c.stId()}" th:checked="${it.first}">
+            <strong th:text="|${it.count}. ${c.stName()}|"></strong>
+            <span th:if="${!#strings.isEmpty(c.directionSummary())}" th:text="|(${c.directionSummary()})|"></span>
+            <div class="muted" th:text="|경유 노선: ${#strings.listJoin(c.routeNames(), ', ')}|"></div>
+        </label>
+        <button type="submit">선택</button>
+        <a th:href="@{/}">취소</a>
+    </form>
+</main>
+</body>
+</html>

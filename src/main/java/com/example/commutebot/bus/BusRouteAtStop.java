@@ -6,5 +6,6 @@ package com.example.commutebot.bus;
  * @param staOrd    해당 정류소의 노선별 순번(ord)
  * @param direction 방면(adirection)
  */
-public record BusRouteAtStop(String busRouteId, String routeName, int staOrd, String direction) {
+public record BusRouteAtStop(String busRouteId, String routeName, int staOrd, String direction)
+        implements java.io.Serializable {
 }

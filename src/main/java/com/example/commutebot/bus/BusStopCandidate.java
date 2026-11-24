@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /** getStationByUid 응답을 정류소 ID(stId)로 묶은 후보 한 건. */
-public record BusStopCandidate(String stId, String arsId, String stName, List<BusRouteAtStop> routes) {
+public record BusStopCandidate(String stId, String arsId, String stName, List<BusRouteAtStop> routes)
+        implements java.io.Serializable {
 
     /** 후보 목록에 보여줄 방면 요약. */
     public String directionSummary() {
